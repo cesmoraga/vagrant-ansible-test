@@ -1,0 +1,37 @@
+---
+# tasks file for docker
+- name: Instalando prerequisitos docker-repo
+  yum:
+    name: '{{packages}}'
+  become: true
+  vars:
+    packages:
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+
+- name: Instalado docker-repo
+  yum_repository:
+    name: 'docker-ce'
+    description: 'Repositorio docker community edition'
+    baseurl: 'https://download.docker.com/linux/centos/docker-ce.repo'
+  become: true
+
+- name: Instalando Epel
+  yum:
+    name: 'epel-release'
+    state: latest
+  become: true
+
+- name: Actualizando Respositorios
+  yum:
+    name: '*'
+    state: latest
+    exclude: kernel*,foo* 
+  become: true
+
+- name: Instalando docker
+  yum:
+    name: docker-ce
+    state: latest
+  become: true
