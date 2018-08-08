@@ -1,0 +1,11 @@
+---
+# tasks file for ansible
+- name: Instalando prerequisitos docker-repo
+  yum:
+    name: '{{packages}}'
+  become: true
+  vars:
+    packages:
+        - ansible
+        - python-pip
+

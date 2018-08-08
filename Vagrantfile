@@ -1,8 +1,13 @@
+$script = <<-SCRIPT
+yum install -y ansible
+ansible-playbook /vagrant/playbook.yml
+SCRIPT
+
 Vagrant.configure("2") do |config|
 
 	#config.vm.box = "centos/7"
 		
-	config.vm.provision "ansible" do |ansible|
+	config.vm.provision "shell", inline: $script 
 
 		config.vm.define "manager" do |manager|
 			manager.vm.hostname = "manager"
@@ -15,7 +20,6 @@ Vagrant.configure("2") do |config|
 			worker1.vm.network "private_network", ip: "192.168.10.101", virtualbox_intnet: "intnet"
 			worker1.vm.box = "centos/7"
 		end
-    		ansible.playbook = "playbook.yml"
-  	end
+#    		ansible.playbook = "playbook.yml"
 end
 
