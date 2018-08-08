@@ -1,0 +1,25 @@
+---
+# tasks file for consul
+. name: copiando consul
+  copy:
+     src: file/consul
+     dest: /usr/sbin/
+     mode: 6755
+  become: true
+
+- name: configurando server
+  template: 
+     src: templates/consul_srv.json.j2
+     dest: /etc/consul/consul.json
+  become: true
+  when: ansible_hostname == 'manager'
+
+- name: configurando server
+  template: 
+     src: templates/consul_agent.json.j2
+     dest: /etc/consul/consul.json
+  become: true
+  when: ansible_hostname != 'manager'
+
+- name: iniciando consul 
+  shell: 'consul '   
