@@ -1,0 +1,29 @@
+## Creando swarm
+#- name: obtiendo nombre de maquinas
+#  debug: var=hostvars
+
+- name: creando swarm
+  shell: docker swarm init --advertise-addr {{ ansible_eth1['ipv4']['address'] }}
+  become: true
+  when: "docker_info.stdout.find('Swarm: inactive') != -1 and ansible_hostname == 'manager'"
+
+- name: obteniendo token swarm
+  shell: docker swarm join-token -q worker
+  register: worker_token
+  become: true
+  when: inventory_hostname == "manager"
+
+- name: obteniendo token swarm
+  copy: content="{{ worker_token.stdout}} {{ansible_eth1['ipv4']['address'] }}:2377" dest=token_swarm.txt
+  #become: true
+#  when: inventory_hostname == "manager"
+  delegate_to: localhost
+
+- name: obtiendo nombre de maquinas
+  debug: var=hostvars['manager']['worker_token']['stdout']
+
+- name: uniendo al swarm
+  shell: "docker swarm join --token  {{ lookup('/vagrant/token_swarm.txt') }}"
+#hostvars['manager']['worker_token']['stdout'] }} hostvars['manager']['ansible_eth0']['ipv4']['address'] }}:2377"
+  become: true
+  when: inventory_hostname != "manager"

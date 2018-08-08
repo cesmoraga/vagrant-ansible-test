@@ -11,10 +11,7 @@
         - lvm2
 
 - name: Instalado docker-repo
-  yum_repository:
-    name: 'docker-ce'
-    description: 'Repositorio docker community edition'
-    baseurl: 'https://download.docker.com/linux/centos/docker-ce.repo'
+  shell: "yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo" 
   become: true
 
 - name: Instalando Epel
@@ -23,15 +20,27 @@
     state: latest
   become: true
 
-- name: Actualizando Respositorios
-  yum:
-    name: '*'
-    state: latest
-    exclude: kernel*,foo* 
-  become: true
+#- name: Actualizando Respositorios
+#  yum:
+#    name: '*'
+#    state: latest
+#    exclude: kernel*,foo* 
+#  become: true
 
 - name: Instalando docker
   yum:
     name: docker-ce
     state: latest
   become: true
+
+- name: Subiendo docker...
+  service: name=docker state=started
+  become: true
+
+- name: "obteniendo docker info"
+  shell: docker info
+  register: docker_info
+  become: true
+  changed_when: false
+
+- include_tasks: creando_swarm.yml

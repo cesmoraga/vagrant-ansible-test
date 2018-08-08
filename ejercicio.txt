@@ -1,0 +1,15 @@
+1.    Mínimo requerido
+a.    Crear una máquina virtual con Vagrant y provisiona un docker engine con Ansible o Puppet. Recomendamos usar ansible-playbook local o puppet apply, evita las ejecuciones remotas con inventario de ansible o puppet-master.
+b.    Despliega una aplicación dockerizada sobre la VM usando Ansible y docker-compose. 
+c.    Crear un repositorio en Github con todos los archivos necesarios para crear la infraestructura virtual y un README file con la documentación para replicar el escenario y un diagrama que explique el flujo.
+d.    Nota: si puedes hacer todo esto sobre un orquestador como docker swarm o kubernetes suma puntos.
+2.    Deseable para tener más opciones: 
+ .    Crear otra Vagrant con tu herramienta de CI favorita.
+a.    Crear un pipeline file que haga los siguientes pasos cada vez que hay un push en el repositorio git.
+i.    Crea un tarball o zip con el código Ansible o Puppet.
+ii.    Cópialo por SSH a la VM que del paso 1.a 
+iii.    Ejecuta el playbook o manifest en la VM remota.
+b.    Como esto dependerá de un webhook y requiere comunicación entre la herramienta CI, github y las VM, puedes montar un gitlab en otra VM también usando Vagrant.
+
+Nota: Recuerda divertirte en el proceso.
+
