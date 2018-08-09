@@ -1,0 +1,34 @@
+stages:
+  - deploy
+
+
+# Deploying a new container with the image with latest changes.
+deploy:stage:
+  stage: deploy
+  environment:
+    name: staging
+  before_script:
+     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+  script:
+     - docker-compose down
+     - docker-compose pull
+     - docker-compose up -d
+     - docker exec primesubscription_forwarder_1 entrypoint.sh splunk add udp 1514 -sourcetype syslog
+  only:
+    - develop
+  tags:
+    - prime-test
+    
+    
+deploy:prod:
+  stage: deploy
+  environment:
+    name: production
+  before_script:
+     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+  script:
+     - docker stack deploy --compose-file=app-stack.yml app-stack --with-registry-auth
+  only:
+    - tags
+  tags:
+     - manager-swarm
