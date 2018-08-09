@@ -15,26 +15,32 @@
      mode: 6755
   become: true
 
-#- name: configurando server
-#  template: 
-#     src: templates/consul_srv.json.j2
-#     dest: /etc/consul/consul.json
-#  become: true
-#  when: ansible_hostname == 'manager'
+- name: Creando carpeta consul
+  file: 
+     path: /etc/consul 
+     state: directory
+  become: true
+  
+- name: configurando server
+  template: 
+     src: templates/consul-server.json.j2
+     dest: /etc/consul/consul-server.json
+  become: true
+  when: ansible_hostname == 'manager'
 
-#- name: configurando server
-#  template: 
-#     src: templates/consul_agent.json.j2
-#     dest: /etc/consul/consul.json
-#  become: true
-#  when: ansible_hostname != 'manager'
+- name: configurando agent
+  template: 
+     src: templates/consul-agent.json.j2
+     dest: /etc/consul/consul-agent.json
+  become: true
+  when: ansible_hostname != 'manager'
 
 - name: iniciando consul 
-  shell: 'consul agent -server -bootstrap --data-dir /tmp/consul -ui -bind 192.168.10.100 &'
+  shell: 'consul agent -server -bootstrap-expect=1 --data-dir /tmp/consul -ui -bind {{ansible_eth0.ipv4.address}} -config-file /etc/consul/consul-server.json &'
   when: ansible_hostname == 'manager'
   become: true
 
 - name: iniciando consul 
-  shell: 'consul agent -bootstrap -data-dir /tmp/consul -join 192.168.10.100 &'
+  shell: 'consul agent -dev -bootstrap -data-dir /tmp/consul -config-file /etc/consul/consul-agent.json &'
   when: ansible_hostname != 'manager'
   become: true
