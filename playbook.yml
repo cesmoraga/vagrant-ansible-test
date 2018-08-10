@@ -4,3 +4,4 @@
      - docker
      - ansible
      - consul
+     - docker-swarm

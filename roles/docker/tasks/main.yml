@@ -43,4 +43,3 @@
   become: true
   changed_when: false
 
-#- include_tasks: creando_swarm.yml

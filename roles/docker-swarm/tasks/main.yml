@@ -1,0 +1,53 @@
+## Creando swarm
+#- name: obtiendo nombre de maquinas
+#  debug: var=hostvars
+- name: Instalando docker
+  yum:
+    name: python2-pip
+    state: latest
+  become: true
+
+- name: instalando python-consul
+  pip: 
+    name: python-consul
+  become: true
+
+- name: creando swarm
+  shell: docker swarm init --advertise-addr {{ ansible_eth1['ipv4']['address'] }}
+  become: true
+  when: "docker_info.stdout.find('Swarm: inactive') != -1 and ansible_hostname == 'manager'"
+
+- name: obteniendo token swarm
+  shell: docker swarm join-token -q worker
+  register: worker_token
+  become: true
+  when: ansible_hostname == "manager"
+
+- name: escribiendo token swarm
+  consul_kv:
+    key: manager/token_swarm
+    value: '{{worker_token.stdout}}' 
+  become: true
+  when: ansible_hostname == "manager"
+
+#- pause:
+#    minutes: 1
+
+- name: obteniendo token
+  consul_kv: 
+    key: manager/token_swarm
+  register: token_swarm
+  when: ansible_hostname != "manager"
+
+- debug: var=token_swarm['data']['Value']
+  when: ansible_hostname != "manager"
+
+- name: uniendo al swarm
+  shell: "docker swarm join --token  {{ token_swarm['data']['Value']}} 192.168.100.10:2377 --advertise-addr {{ ansible_eth1['ipv4']['address'] }}"
+  become: true
+  when: ansible_hostname != "manager"
+
+- name: Deployando portainer
+  shell: "docker stack deploy --compose-file=/vagrant/portainer-stack.yml portainer_stack"
+  become: true
+  when: ansible_hostname == "manager"
