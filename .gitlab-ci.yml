@@ -1,22 +1,28 @@
 stages:
+  - clean
   - provision
   - deploy
 
-# Deploying a new container with the image with latest changes.
-provision:stage:
-  stage: provision
+clean:stage:
+  stage: clean
   environment:
     name: staging
   script:
      - vagrant halt
      - vagrant destroy
+  allow_failure: true
+
+provision:stage:
+  stage: provision
+  environment:
+    name: staging
+  script:
      - vagrant up
      - vagrant provision
   only:
     - master
   tags:
     - vagrant
-    
     
 deploy:stage:
   stage: deploy
