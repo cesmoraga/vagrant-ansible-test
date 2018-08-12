@@ -11,6 +11,10 @@ clean:stage:
      - vagrant halt
      - vagrant destroy
   allow_failure: true
+  only:
+    - master
+  tags:
+    - vagrant
 
 provision:stage:
   stage: provision
