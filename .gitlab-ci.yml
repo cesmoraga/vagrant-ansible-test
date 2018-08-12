@@ -7,10 +7,9 @@ provision:stage:
   stage: provision
   environment:
     name: staging
-  before_script:
+  script:
      - vagrant halt
      - vagrant destroy
-  script:
      - vagrant up
      - vagrant provision
   only:
