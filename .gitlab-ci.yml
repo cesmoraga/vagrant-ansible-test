@@ -1,34 +1,33 @@
 stages:
+  - provision
   - deploy
 
-
 # Deploying a new container with the image with latest changes.
-deploy:stage:
-  stage: deploy
+provision:stage:
+  stage: provision
   environment:
     name: staging
   before_script:
-     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+     - vagrant halt
+     - vagrant destroy
   script:
-     - docker-compose down
-     - docker-compose pull
-     - docker-compose up -d
-     - docker exec primesubscription_forwarder_1 entrypoint.sh splunk add udp 1514 -sourcetype syslog
+     - vagrant up
+  after_script:
+     - vagrant rsync
+     - vagrant provision
   only:
-    - develop
+    - master
   tags:
-    - prime-test
+    - vagrant
     
     
-deploy:prod:
+deploy:stage:
   stage: deploy
   environment:
     name: production
-  before_script:
-     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
   script:
-     - docker stack deploy --compose-file=app-stack.yml app-stack --with-registry-auth
+     - docker stack deploy --compose-file=/vagrant/portainer-stack.yml portainer_stack 
   only:
-    - tags
+    - master
   tags:
-- manager-swarm
+    - manager-swarm
