@@ -5,7 +5,6 @@ SCRIPT
 
 Vagrant.configure("2") do |config|
 
-	#config.vm.box = "centos/7"
 	config.vm.synced_folder ".", "/vagrant", type: "rsync"		
 	config.vm.provision "shell", inline: $script 
 
@@ -16,11 +15,13 @@ Vagrant.configure("2") do |config|
 			manager.vm.network "forwarded_port", guest: 8500, host: 8500
 			manager.vm.box = "centos/7"
 		end
-		config.vm.define "worker1" do |worker1|
-			worker1.vm.hostname = "worker1"
-			worker1.vm.network "private_network", ip: "192.168.10.101", virtualbox_intnet: "intnet"
-			worker1.vm.box = "centos/7"
+        (1..3).each do |i|
+		config.vm.define "worker#{i}" do |worker|
+			worker.vm.hostname = "worker#{i}"
+			worker.vm.network "private_network", ip: "192.168.10.10#{i}", virtualbox_intnet: "intnet"
+			worker.vm.box = "centos/7"
 		end
-#    		ansible.playbook = "playbook.yml"
+	end
+	
 end
 

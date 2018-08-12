@@ -30,9 +30,6 @@
   become: true
   when: ansible_hostname == "manager"
 
-#- pause:
-#    minutes: 1
-
 - name: obteniendo token
   consul_kv: 
     key: manager/token_swarm
@@ -51,3 +48,30 @@
   shell: "docker stack deploy --compose-file=/vagrant/portainer-stack.yml portainer_stack"
   become: true
   when: ansible_hostname == "manager"
+
+- name: instalando repo runner
+  shell: "curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | sudo bash"
+  become: true
+  when: ansible_hostname == "manager"
+
+- name: Instalando gitlab-runner
+  yum:
+    name: gitlab-runner
+    state: latest
+  become: true
+
+- name: mostrando runner configurados
+  command: gitlab-runner list
+  register: configured_runners
+  changed_when: False
+  when: ansible_hostname == "manager"
+
+- name: Registrando runner
+  command: gitlab-runner register >
+    --non-interactive
+    --url '{{ gitlab_runner_coordinator_url }}'
+    --registration-token '{{ gitlab_runner_registration_token }}'
+    --description '{{ gitlab_runner_description }}'
+    --tag-list '{{ gitlab_runner_tags | join(",") }}'
+    --executor '{{ gitlab_runner_executor }}'
+  when: "configured_runners.stderr.find('\n{{ gitlab_runner_description }}') == -1 and ansible_hostname == 'manager'"
