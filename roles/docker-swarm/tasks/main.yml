@@ -23,6 +23,9 @@
   become: true
   when: ansible_hostname == "manager"
 
+- debug: var=worker_token
+  when: ansible_hostname == "manager"
+
 - name: escribiendo token swarm
   consul_kv:
     key: manager/token_swarm
@@ -36,15 +39,13 @@
   register: token_swarm
   when: ansible_hostname != "manager"
 
+- debug: var=token_swarm['data']['Value']
+  when: ansible_hostname != "manager"
+
 - name: uniendo al swarm
   shell: "docker swarm join --token  {{ token_swarm['data']['Value']}} 192.168.10.100:2377 --advertise-addr {{ ansible_eth1['ipv4']['address'] }}"
   become: true
   when: ansible_hostname != "manager"
-
-- name: Deployando portainer
-  shell: "docker stack deploy --compose-file=/vagrant/portainer-stack.yml portainer_stack"
-  become: true
-  when: ansible_hostname == "manager"
 
 - name: instalando repo runner
   shell: "curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | sudo bash"
@@ -56,6 +57,7 @@
     name: gitlab-runner
     state: latest
   become: true
+  when: ansible_hostname == "manager"
 
 - name: mostrando runner configurados
   command: gitlab-runner list
@@ -72,3 +74,8 @@
     --tag-list '{{ gitlab_runner_tags }}'
     --executor '{{ gitlab_runner_executor }}'
   when: "configured_runners.stderr.find('\n{{ gitlab_runner_description }}') == -1 and ansible_hostname == 'manager'"
+
+- name: Deployando portainer
+  shell: "docker stack deploy --compose-file=/vagrant/portainer-stack.yml portainer_stack"
+  become: true
+  when: ansible_hostname == "manager"
