@@ -13,7 +13,6 @@ provision:stage:
   script:
      - vagrant up
   after_script:
-     - vagrant rsync
      - vagrant provision
   only:
     - master
