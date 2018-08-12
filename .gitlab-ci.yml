@@ -12,7 +12,6 @@ provision:stage:
      - vagrant destroy
   script:
      - vagrant up
-  after_script:
      - vagrant provision
   only:
     - master
