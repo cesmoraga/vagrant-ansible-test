@@ -1,4 +1,7 @@
-- hosts: all
+- hosts: localhost
 
   roles: 
      - docker
+     - ansible
+     - consul
+     - docker-swarm

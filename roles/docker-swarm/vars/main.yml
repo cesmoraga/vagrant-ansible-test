@@ -1,0 +1,7 @@
+---
+# vars file for docker-swarm
+gitlab_runner_coordinator_url: 'https://gitlab.com/'
+gitlab_runner_registration_token: 'xEfSE_DFhqQsoA8zJPfQ'
+gitlab_runner_description: 'docker-swarm vagrant manager'
+gitlab_runner_tags: 'docker-swarm'
+gitlab_runner_executor: 'shell'
