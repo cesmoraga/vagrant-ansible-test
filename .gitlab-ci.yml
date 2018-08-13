@@ -8,8 +8,7 @@ clean:stage:
   environment:
     name: staging
   script:
-     - vagrant halt
-     - vagrant destroy
+     - ./LimpiezaMaquinasVagrant.sh
   allow_failure: true
   only:
     - master

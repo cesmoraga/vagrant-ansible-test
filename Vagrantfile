@@ -1,6 +1,6 @@
 $script = <<-SCRIPT
 yum install -y ansible
-ansible-playbook /vagrant/playbook.yml
+ansible-playbook /vagrant/playbook.yml -v
 SCRIPT
 
 Vagrant.configure("2") do |config|
