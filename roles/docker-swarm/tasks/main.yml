@@ -21,8 +21,7 @@
   shell: docker swarm join-token -q worker
   register: worker_token
   become: true
- # when: ansible_hostname == "manager"
-  delegate_to: 192.168.10.100
+  when: ansible_hostname == "manager"
 
 - debug: var=worker_token
   when: ansible_hostname == "manager"
@@ -32,8 +31,7 @@
     key: manager/token_swarm
     value: '{{worker_token.stdout}}' 
   become: true
-  #when: ansible_hostname == "manager"
-  delegate_to: 192.168.10.100
+  when: ansible_hostname == "manager"
 
 - name: obteniendo token
   consul_kv: 

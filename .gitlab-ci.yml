@@ -20,7 +20,7 @@ provision:stage:
   environment:
     name: staging
   script:
-     - vagrant up
+     - vagrant up --no-provision --parallel
      - vagrant provision
   only:
     - master
