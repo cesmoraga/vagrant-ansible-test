@@ -33,9 +33,14 @@
   become: true
   when: ansible_hostname == "manager"
 
+#- name: obteniendo token
+#  consul_kv: 
+#    key: manager/token_swarm
+#  register: token_swarm
+#  when: ansible_hostname != "manager"
+
 - name: obteniendo token
-  consul_kv: 
-    key: manager/token_swarm
+  shell: "curl -s http://192.168.10.100:8500/v1/kv/manager/token_swarm?raw"
   register: token_swarm
   when: ansible_hostname != "manager"
 
