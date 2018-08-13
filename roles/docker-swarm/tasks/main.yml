@@ -44,11 +44,11 @@
   register: token_swarm
   when: ansible_hostname != "manager"
 
-- debug: var=token_swarm['data']['Value']
+- debug: var=token_swarm
   when: ansible_hostname != "manager"
 
 - name: uniendo al swarm
-  shell: "docker swarm join --token  {{ token_swarm['data']['Value']}} 192.168.10.100:2377 --advertise-addr {{ ansible_eth1['ipv4']['address'] }}"
+  shell: "docker swarm join --token  {{ token_swarm }} 192.168.10.100:2377 --advertise-addr {{ ansible_eth1['ipv4']['address'] }}"
   become: true
   when: ansible_hostname != "manager"
 
