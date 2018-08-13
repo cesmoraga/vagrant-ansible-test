@@ -30,8 +30,24 @@ En el diagrama se puede ver como interactua cada capa.
 ## Como ejecutar
 
 	$ git clone https://github.com/cesmoraga/vagrant-ansible-test.git
+	$ cd vagrant-ansible-test
+	$ vagrant up
+	
+O usando CICD como se menciona a continuacion	
   
 Modificar Vagrantfile, deacuerdo a las VM que necesites (worker), y luego hacer push a master, con esto se subiran los cambios a github, luego se sincronizaran los cambios a [gitlab](https://gitlab.com/camoraga/vagrant-ansible-test/), cuando gitlab detecta el nuevo cambio, ejecuta los pasos de .gitlab-ci.yml en el runner donde esta instalado el vagrant. 
+
+Luego de que todo los pasos se ejecuten correctamente usted debiera tener 2 URL:
+
+http://localhost:8500/ui   -  Esta es la consola de consul, donde en se pueden ver los nodos y sus servicios:
+![consul](consul-nodes.jpeg)
+
+
+http://localhost:9000/     -  Esta es la consola de portainer, donde se puede administrar el docker-swarm hacer deploy manuales, quitar nodos, etc.
+![portainer1](portainer1.png)
+
+![portainer2](portainer2.png)
+
 
 ## Restricciones
 
