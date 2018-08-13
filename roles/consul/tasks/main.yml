@@ -41,6 +41,6 @@
   become: true
 
 - name: iniciando consul 
-  shell: 'consul agent -data-dir /tmp/consul -config-file /etc/consul/consul-agent.json &'
+  shell: 'consul agent -dev -data-dir /tmp/consul -config-file /etc/consul/consul-agent.json &'
   when: ansible_hostname != 'manager'
   become: true
