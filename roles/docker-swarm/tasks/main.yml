@@ -31,10 +31,10 @@
     key: manager/token_swarm
     value: '{{worker_token.stdout}}' 
   become: true
-  retries: 3
-  delay: 3
-  register: result
-  until: result.rc == 0
+#  retries: 3
+#  delay: 3
+#  register: result
+#  until: result.rc == 0
   when: ansible_hostname == "manager"
 
 - name: obteniendo token
