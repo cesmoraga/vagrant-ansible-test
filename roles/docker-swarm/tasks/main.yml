@@ -48,7 +48,7 @@
   when: ansible_hostname != "manager"
 
 - name: uniendo al swarm
-  shell: "docker swarm join --token  {{ token_swarm }} 192.168.10.100:2377 --advertise-addr {{ ansible_eth1['ipv4']['address'] }}"
+  shell: "docker swarm join --token  {{ token_swarm.stdout }} 192.168.10.100:2377 --advertise-addr {{ ansible_eth1['ipv4']['address'] }}"
   become: true
   when: ansible_hostname != "manager"
 
