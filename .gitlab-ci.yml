@@ -30,7 +30,7 @@ provision:stage:
 deploy:stage:
   stage: deploy
   environment:
-    name: production
+    name: staging
   script:
      - docker stack deploy --compose-file=/vagrant/portainer-stack.yml portainer_stack 
   only:
